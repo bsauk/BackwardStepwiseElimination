@@ -3,7 +3,7 @@
 This repository holds the code for "Backward stepwise elimination: Approximation guarantee, a batched GPU algorithm, and empirical investigation."
 
 ## src
-These files were the ones that were created to perform batched backward stepwise elimination with MAGMA. After downloading MAGMA, please copy these files into the ./magma-2.5.0/src directory and then proceed with the MAGMA installation. These files
+These files perform batched backward stepwise elimination with MAGMA. After downloading MAGMA, please copy these files into the ./magma-2.5.0/src directory and then proceed with the MAGMA installation. These files
 are needed to run the backwards.opt algorithm that is used in the two other directories.
 
 ## GPUBatchBSE
