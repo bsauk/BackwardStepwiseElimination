@@ -1,4 +1,4 @@
-function sseSNR(projectdir)
+function plotSNR(projectdir)
 
 cd(projectdir)
 
@@ -6,13 +6,11 @@ fn1 = 'lasso.out';
 fn2 = 'fss.out';
 fn3 = 'bse.out';
 fn4 = 'relaxedlasso.out';
-fn5 = 'bestSubset.out';
 
 y1=csvread(fn1);
 y2=csvread(fn2);
 y3=csvread(fn3);
 y4=csvread(fn4);
-y5=csvread(fn5);
  
 l=length(y1);
 
@@ -23,14 +21,13 @@ x = [0.05, 0.09, 0.14, 0.25, 0.42, 0.71, 1.22, 2.07, 3.52, 6];
 %%%%%%%%%%%%%%%% Number of Basis Functions %%%%%%%%%%%%%%%%
 f=figure;
 set(f,'name','Compare NNZ') 
-h=plot(x(:), y1(:,1), 'r+', x(:), y2(:,1), 'k^', x(:), y3(:,1), '*b', x(:), y4(:,1), 'mx', x(:), y5(:,1), 'sg');
+h=plot(x(:), y1(:,1), 'r+', x(:), y2(:,1), 'k^', x(:), y3(:,1), '*b', x(:), y4(:,1), 'mx');
 
 label1='Lasso';
 label2='Forward Stepwise Selection';
 label3='Backwards Stepwise Elimination';
 label4='Relaxed Lasso';
-label5='Best Subset';
-lgd=legend({label1,label2,label3,label4,label5}, 'Box', 'off', 'Location', 'northeast');
+lgd=legend({label1,label2,label3,label4}, 'Box', 'off', 'Location', 'northeast');
 
 xlabel('Signal to noise ratio') 
 ylabel('Number of basis functions')
@@ -41,7 +38,6 @@ set(h(1), 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r');
 set(h(2), 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k');
 set(h(3), 'MarkerEdgeColor', 'b', 'MarkerFaceColor', 'b');
 set(h(4), 'MarkerEdgeColor', 'm', 'MarkerFaceColor', 'm');
-set(h(5), 'MarkerEdgeColor', 'g', 'MarkerFaceColor', 'g');
 
 %These parts are plot independent
 set(gca,'fontsize',18,'fontweight','bold', 'Xscale', 'log') %Sets the fontsize of the axis labels to 18 and makes them bold
@@ -59,15 +55,14 @@ saveas(gcf, 'terms', 'epsc')
 %%%%%%%%%%% Relative Risk %%%%%%%%%%%%%%%%%%%%
 
 set(f,'name','Compare RR') 
-h=plot(x(:), y1(:,2), 'r+', x(:), y2(:,2), 'k^', x(:), y3(:,2), '*b', x(:), y4(:,2), 'mx', x(:), y5(:,2), 'sg');
+h=plot(x(:), y1(:,2), 'r+', x(:), y2(:,2), 'k^', x(:), y3(:,2), '*b', x(:), y4(:,2), 'mx');
 ylabel('Relative Risk')
 axis([0,6,0,1])
 label1='Lasso';
 label2='Forward Stepwise Selection';
 label3='Backwards Stepwise Elimination';
 label4='Relaxed Lasso';
-label5='Best Subset';
-lgd=legend({label1,label2,label3,label4,label5}, 'Box', 'off', 'Location', 'northeast');
+lgd=legend({label1,label2,label3,label4}, 'Box', 'off', 'Location', 'northeast');
 
 xlabel('Signal to noise ratio') 
 set(h,{'markers'},{10}) %Changes the marker size
@@ -75,7 +70,6 @@ set(h(1), 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r');
 set(h(2), 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k');
 set(h(3), 'MarkerEdgeColor', 'b', 'MarkerFaceColor', 'b');
 set(h(4), 'MarkerEdgeColor', 'm', 'MarkerFaceColor', 'm');
-set(h(5), 'MarkerEdgeColor', 'g', 'MarkerFaceColor', 'g');
 
 %These parts are plot independent
 set(gca,'fontsize',18,'fontweight','bold', 'Xscale', 'log') %Sets the fontsize of the axis labels to 18 and makes them bold
@@ -93,13 +87,12 @@ saveas(gcf, 'rr', 'epsc')
 %%%%%%%%%%% Relative Test Error %%%%%%%%%%%%%%%%%%%%
 
 set(f,'name','Compare RTE') 
-h=plot(x(:), y1(:,3), 'r+', x(:), y2(:,3), 'k^', x(:), y3(:,3), '*b', x(:), y4(:,3), 'mx', x(:), y5(:,3), 'sg');
+h=plot(x(:), y1(:,3), 'r+', x(:), y2(:,3), 'k^', x(:), y3(:,3), '*b', x(:), y4(:,3), 'mx', x(:));
 
 label1='Lasso';
 label2='Forward Stepwise Selection';
 label3='Backwards Stepwise Elimination';
 label4='Relaxed Lasso';
-label5='Best Subset';
 lgd=legend({label1,label2,label3,label4,label5}, 'Box', 'off', 'Location', 'northeast');
 xlabel('Signal to noise ratio') 
 ylabel('Relative Test Error')
@@ -109,7 +102,6 @@ set(h(1), 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r');
 set(h(2), 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k');
 set(h(3), 'MarkerEdgeColor', 'b', 'MarkerFaceColor', 'b');
 set(h(4), 'MarkerEdgeColor', 'm', 'MarkerFaceColor', 'm');
-set(h(5), 'MarkerEdgeColor', 'g', 'MarkerFaceColor', 'g');
 
 %These parts are plot independent
 set(gca,'fontsize',18,'fontweight','bold', 'Xscale', 'log') %Sets the fontsize of the axis labels to 18 and makes them bold
@@ -127,7 +119,7 @@ saveas(gcf, 'rte', 'epsc')
 %%%%%%%%%%% Proportion of Variance Explained %%%%%%%%%%%%%%%%%%%%
 
 set(f,'name','Compare PVE') 
-h=plot(x(:), y1(:,4), 'r+', x(:), y2(:,4), 'k^', x(:), y3(:,4), '*b', x(:), y4(:,4), 'mx', x(:), y5(:,4), 'sg');
+h=plot(x(:), y1(:,4), 'r+', x(:), y2(:,4), 'k^', x(:), y3(:,4), '*b', x(:), y4(:,4), 'mx');
 ylabel('Proportion of Variance Explained')
 axis([0,6,0,1])
 
@@ -135,8 +127,7 @@ label1='Lasso';
 label2='Forward Stepwise Selection';
 label3='Backwards Stepwise Elimination';
 label4='Relaxed Lasso';
-label5='Best Subset';
-lgd=legend({label1,label2,label3,label4,label5}, 'Box', 'off', 'Location', 'northeast');
+lgd=legend({label1,label2,label3,label4}, 'Box', 'off', 'Location', 'northeast');
 
 
 xlabel('Signal to noise ratio') 
@@ -145,7 +136,6 @@ set(h(1), 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r');
 set(h(2), 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k');
 set(h(3), 'MarkerEdgeColor', 'b', 'MarkerFaceColor', 'b');
 set(h(4), 'MarkerEdgeColor', 'm', 'MarkerFaceColor', 'm');
-set(h(5), 'MarkerEdgeColor', 'g', 'MarkerFaceColor', 'g');
 
 %These parts are plot independent
 set(gca,'fontsize',18,'fontweight','bold', 'Xscale', 'log') %Sets the fontsize of the axis labels to 18 and makes them bold

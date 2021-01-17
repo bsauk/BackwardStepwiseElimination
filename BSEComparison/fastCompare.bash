@@ -1,11 +1,10 @@
 #!/bin/bash
 
-rho=0.70 # Changed from 0.9 for last experiments
-SNR=(0.05 0.09 0.14 0.25 0.42 0.71 1.22 2.07 3.52 6.0) # Changed from 5
+rho=0.70 
+SNR=(0.05 0.09 0.14 0.25 0.42 0.71 1.22 2.07 3.52 6.0)
 m=500
 n=100
 beta=1
-#s=5 #Changed from 210 to start halfway through.
 COUNT=1
 
 s=5
@@ -14,8 +13,8 @@ sK=0
 while [ $s -le 10 ]; do
     mkdir ./$s
     sed -i 's/$s ##/'"$s ##"'/g' ./fast.R
-#    sed -i 's/$m ##/'"${m[s]} #"'/g' ./master.R
-#    sed -i 's/$n ##/'"${n[s]} #"'/g' ./master.R
+    sed -i 's/$m ##/'"${m[s]} #"'/g' ./master.R
+    sed -i 's/$n ##/'"${n[s]} #"'/g' ./master.R
     while [ $sK -le 9 ]; do #changed from 310
 	mkdir ./$s/$sK
 	sed -i 's/$snr ##/'"${SNR[sK]} ##"'/g' ./fast.R
@@ -91,8 +90,6 @@ while [ $s -le 10 ]; do
 	done
 	COUNT=1
 	
-#	awk '{sum=0; for(i=1; i<=NF; i++) {sum+=$i}; sum/=NF; print sum}' ./$s/$sK/nnz.dat > tmp3.dat
-#	mv tmp3.dat ./$s/$sK/nnz.dat
 	awk '{sum=0; for(i=1; i<=NF; i++) {sum+=$i}; sum/=NF; print sum}' ./$s/$sK/rr.dat > tmp3.dat
 	mv tmp3.dat ./$s/$sK/avgrr.dat
 	awk '{sum=0; for(i=1; i<=NF; i++) {sum+=$i}; sum/=NF; print sum}' ./$s/$sK/rte.dat > tmp3.dat
@@ -116,9 +113,6 @@ while [ $s -le 10 ]; do
 	awk '{sum = 0; for (i = 1; i <= NF; i++) sum += $i; sum /= NF; print sum}' ./$s/$sK/fssAIC.dat > ./$s/$sK/avgfssAIC.dat
         awk '{sum = 0; for (i = 1; i <= NF; i++) sum += $i; sum /= NF; print sum}' ./$s/$sK/fssBIC.dat > ./$s/$sK/avgfssBIC.dat
 
-	#awk 'NR == 1 || $2 < min {line = $0; min = $2}END{print line}' ./$s/$sK/fss.dat >> ./$s/fss.out
-	#awk 'NR == 1 || $2 < min {line = $0; min = $2}END{print line}' ./$s/$sK/lasso.dat >> ./$s/lasso.out	
-
 	awk 'NR == 1 || $2 < min {line = $0; min = $2; bst=NR}END{print line}' ./$s/$sK/fss.dat >> ./$s/fss.out
 	awk 'NR == 1 || $2 < min {line = $0; min = $2; bst=NR}END{print line}' ./$s/$sK/lasso.dat >> ./$s/lasso.out
 
@@ -131,7 +125,6 @@ while [ $s -le 10 ]; do
 	awk '{sum = 0; for (i = 1; i <= NF; i++) sum += $i; sum /= NF; print sum}' ./$s/$sK/relaxedlassoAIC.dat > ./$s/$sK/avgrelaxedlassoAIC.dat
         awk '{sum = 0; for (i = 1; i <= NF; i++) sum += $i; sum /= NF; print sum}' ./$s/$sK/relaxedlassoBIC.dat > ./$s/$sK/avgrelaxedlassoBIC.dat
 
-	#awk 'NR == 1 || $2 < min {line = $0; min = $2}END{print line}' ./$s/$sK/relaxedlasso.dat >> ./$s/relaxedlasso.out
 	awk 'NR == 1 || $2 < min {line = $0; min = $2; bst=NR}END{print line}' ./$s/$sK/relaxedlasso.dat >> ./$s/relaxedlasso.out
 	
 	awk 'NR == 1 || $1 < min {line = $0; min = $1}END{print line}' ./$s/$sK/avgrelaxedlassoAIC.dat >> ./$s/relaxedlassoAIC.out	
@@ -143,7 +136,7 @@ while [ $s -le 10 ]; do
 	sed -i 's/'"${SNR[sK]} ##"'/$snr ##/g' ./fast.R
 	((sK+=1)) # Changed from +=5
     done
-    matlab -nodisplay -nodesktop -nosplash -r "fastSNR2('/home/bsauk/Documents/research/4thyear/update/backward/cudaVersion/comparative/$s'); exit;"
+    matlab -nodisplay -nodesktop -nosplash -r "fastSNR2('./$s'); exit;"
     sK=0 # changed from 5
     sed -i 's/'"$s ##"'/$s ##/g' ./fast.R
     ((s+=5))

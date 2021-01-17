@@ -20,6 +20,13 @@
 
 
 
+// Example usage: ./backwards.out 1000 600 1
+
+/*
+This code is used to run backward stepwise elimination with a batch GPU algorithm. 
+
+
+ */
 // A linked list node 
 struct Node 
 { 
@@ -417,18 +424,6 @@ int main(int argc, char *argv[]) {
 	RTE = (numer+sig[0]*sig[0])/(sig[0]*sig[0]);
 	PVE = 1 - (numer+sig[0]*sig[0])/(denom+sig[0]*sig[0]);
 	printf("%d \t %f \t %f \t %f\n", nt-1, RR, RTE, PVE);
-	/*	
-	// 1. lapack dgemv between Sigma and Bk
-	blasf77_dgemv("NoTrans", &N, &N, &alpha, sigma, &N, Bk, &one, &beta, Ai, &one);
-	// 2. dot product
-	total = 0;
-	for(int i=0; i<N; i++) {
-	  total = Bk[i]*Ai[i]+total;
-	}
-	// 3. RTE = (dotP+sig^2)/sig^2
-	RTE = (total+sig[0]*sig[0])/(sig[0]*sig[0]);
-	printf("%f\n", RTE);
-	*/
       }
     }
   }
@@ -452,13 +447,9 @@ int main(int argc, char *argv[]) {
   fclose(f3);
 
   if(DEBUG) {
-    //    for(int i=0; i<N; i++) {
-    //printf("mask[%d]=%d\n", i, mask[i]);
-    //}
     for(int i=0; i<N; i++) {
       printf("bestSSE[%d]=%f\n", i, bestSSE[i]);
     }
   }
-  //  return magInfo;
   return 0;
 }

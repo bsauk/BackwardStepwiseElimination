@@ -1,7 +1,7 @@
 library(bestsubset)
 set.seed(0)
-n= 500 #$m ##
-p= 100 #$n ##
+n= $m ##
+p= $n ##
 nval = n
 rhoK = 0
 sK =  $s ##
