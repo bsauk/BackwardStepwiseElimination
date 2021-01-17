@@ -1,4 +1,4 @@
 *~
-./BSEComparison/results
-./GPUBatchBSE/results
-./comparative
+./BSEComparison/results/*
+./GPUBatchBSE/results/*
+./comparative/*
