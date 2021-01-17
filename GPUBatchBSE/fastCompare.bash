@@ -2,37 +2,43 @@
 
 rho=0.70 
 SNR=(0.05 0.09 0.14 0.25 0.42 0.71 1.22 2.07 3.52 6.0)
-m=500
-n=100
-beta=1
-COUNT=1
 
+# Manually set m, n, s, and sK to select which experiment you want to run. The values will be updated in the other files as needed using sed.
+m=500 
+n=100
 s=5
 sK=0
 
+beta=1
+COUNT=1
 while [ $s -le 10 ]; do
     mkdir ./$s
+    # This modifies the fast.R file to run the correct experiment
     sed -i 's/$s ##/'"$s ##"'/g' ./fast.R
-    sed -i 's/$m ##/'"${m[s]} #"'/g' ./master.R
-    sed -i 's/$n ##/'"${n[s]} #"'/g' ./master.R
-    while [ $sK -le 9 ]; do #changed from 310
+    sed -i 's/$m ##/'"${m[s]} #"'/g' ./fast.R
+    sed -i 's/$n ##/'"${n[s]} #"'/g' ./fast.R
+    while [ $sK -le 9 ]; do 
 	mkdir ./$s/$sK
 	sed -i 's/$snr ##/'"${SNR[sK]} ##"'/g' ./fast.R
 	echo "Beginning SNR=${SNR[sK]}"
 	Rscript ./fast.R > ./$s/$sK/lasso.txt
+
+##### The next section is all post processing to ensure that the output files are in the correct format
 	paste -d ", " 1outX.out 1outRISK.out 1outY.out 1outPVE.out > ./$s/$sK/fss.dat
 	paste -d ", " 2outX.out 2outRISK.out 2outY.out 2outPVE.out > ./$s/$sK/relaxedlasso.dat
 	paste -d ", " 3outX.out 3outRISK.out 3outY.out 3outPVE.out > ./$s/$sK/lasso.dat
 	mv *bic.out ./$s/$sK
 	mv *aic.out  ./$s/$sK
 	mv "riskPlot.pdf" ./$s/$sK/riskPlot.pdf
-
+#####
 	while [ $COUNT -le 5 ]; do
+#### Create the files needed to run the GPU BSE algorithm.
 	    paste -d " " "$COUNT"x.out "$COUNT"y.out > input.out
 	    mv "$COUNT"b.out b.out
 	    mv "$COUNT"sigma.out sigma.out
 	    mv "$COUNT"s.out s.out
 	    ./backwards.opt $m $n 1 > tmp.dat	    
+##### Create the same output files from BSE
 	    mv b.out "$COUNT"b.out
 	    mv sigma.out "$COUNT"sigma.out
 	    mv s.out "$COUNT"s.out
@@ -88,8 +94,9 @@ while [ $s -le 10 ]; do
 	    fi
 	    ((COUNT++))
 	done
+#####
 	COUNT=1
-	
+#####   Ensure that the data is in a consistent format using awk	
 	awk '{sum=0; for(i=1; i<=NF; i++) {sum+=$i}; sum/=NF; print sum}' ./$s/$sK/rr.dat > tmp3.dat
 	mv tmp3.dat ./$s/$sK/avgrr.dat
 	awk '{sum=0; for(i=1; i<=NF; i++) {sum+=$i}; sum/=NF; print sum}' ./$s/$sK/rte.dat > tmp3.dat
@@ -136,8 +143,11 @@ while [ $s -le 10 ]; do
 	sed -i 's/'"${SNR[sK]} ##"'/$snr ##/g' ./fast.R
 	((sK+=1)) # Changed from +=5
     done
+
+##### Display results in MATLAB. The file path may need to be changed to the absolute path. If you do not have MATLAB please comment this line out!
     matlab -nodisplay -nodesktop -nosplash -r "fastSNR2('./$s'); exit;"
-    sK=0 # changed from 5
+    sK=0
+# This will reset the fast.R file so that it can be used again in the next iteration of the loop.
     sed -i 's/'"$s ##"'/$s ##/g' ./fast.R
     ((s+=5))
 done
